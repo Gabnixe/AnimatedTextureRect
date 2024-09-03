@@ -46,7 +46,6 @@ func is_playing():
 
 func pause():
     _playing = false
-    pass
 
 #Calling Play() without parameters will start/resume the currently selected animation
 func play(name: StringName = &"", custom_speed: float = 1.0, from_end: bool = false):
@@ -64,13 +63,11 @@ func play_backwards(name: StringName = &""):
 func set_frame_and_progress(new_frame: int, new_progress: float):
     frame = new_frame
     frame_progress = new_progress
-    pass
 
 func stop():
     pause()
     frame = 0
     _custom_speed = 1
-    pass
 
 func _ready() -> void:
     if sprite_frames:

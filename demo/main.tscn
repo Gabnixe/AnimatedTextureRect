@@ -1,14 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://vf357k17fgrv"]
+[gd_scene load_steps=8 format=3 uid="uid://vf357k17fgrv"]
 
-[ext_resource type="Texture2D" uid="uid://dvufi16qt18no" path="res://demo/animations/Attack1.png" id="1_7m6pu"]
+[ext_resource type="Texture2D" uid="uid://bvec2rpq1uwa2" path="res://demo/animations/Idle.png" id="1_5rax5"]
 [ext_resource type="Script" path="res://addons/animatedtexturerect/animated_texture_rect.gd" id="2_jk43o"]
+[ext_resource type="SpriteFrames" uid="uid://bgxq75ppmbsn7" path="res://demo/animations/demo_sprite_frames.tres" id="3_o78nd"]
 [ext_resource type="Script" path="res://demo/frame_value.gd" id="4_f6cgw"]
 [ext_resource type="Script" path="res://demo/frame_progress_value.gd" id="4_fwva8"]
 [ext_resource type="Script" path="res://demo/speed_scale.gd" id="6_3ccb8"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6ucnw"]
-atlas = ExtResource("1_7m6pu")
-region = Rect2(0, 0, 200, 200)
+[sub_resource type="AtlasTexture" id="AtlasTexture_i48e3"]
+atlas = ExtResource("1_5rax5")
+region = Rect2(1000, 0, 200, 200)
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -41,10 +42,14 @@ offset_right = 300.0
 offset_bottom = 284.5
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("AtlasTexture_6ucnw")
+texture = SubResource("AtlasTexture_i48e3")
 stretch_mode = 4
 script = ExtResource("2_jk43o")
-animation = ""
+show_preview = true
+autoplay = false
+sprite_frames = ExtResource("3_o78nd")
+frame = 5
+animation = "Idle"
 
 [node name="Stats" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -73,7 +78,7 @@ text = "Frame:"
 
 [node name="FrameValue" type="Label" parent="Stats/HBoxContainer"]
 layout_mode = 2
-text = "0"
+text = "5"
 script = ExtResource("4_f6cgw")
 
 [node name="Controls" type="VBoxContainer" parent="."]
@@ -148,8 +153,6 @@ grow_horizontal = 0
 text = "Credits to luizmelo for the demo sprites
 
 https://luizmelo.itch.io/martial-hero"
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 
 [connection signal="frame_changed" from="AnimatedTextureRect" to="Stats/HBoxContainer/FrameValue" method="_on_frame_changed"]
 [connection signal="value_changed" from="Controls/HBoxContainer2/HSlider" to="Controls/HBoxContainer2/SpinBox" method="set_value"]
