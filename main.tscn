@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://vf357k17fgrv"]
 
-[ext_resource type="Script" path="res://addons/animatedtexturerect/animated_texture_rect.gd" id="1_cmfrj"]
-[ext_resource type="Texture2D" uid="uid://ceh2vwryfq3kq" path="res://animation/run-5.png" id="1_n3sum"]
+[ext_resource type="Texture2D" uid="uid://cmjjra71je7vl" path="res://animation/run-2.png" id="1_tonfe"]
+[ext_resource type="Script" path="res://test.gd" id="2_txib2"]
 [ext_resource type="SpriteFrames" uid="uid://bgxq75ppmbsn7" path="res://animation/test_sprite_frames.tres" id="3_o78nd"]
 
 [node name="Control" type="Control"]
@@ -20,17 +20,17 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -189.0
-offset_right = 229.0
-offset_bottom = 34.0
+offset_left = -35.5
+offset_top = -33.5
+offset_right = 35.5
+offset_bottom = 33.5
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_n3sum")
+texture = ExtResource("1_tonfe")
 stretch_mode = 4
-script = ExtResource("1_cmfrj")
+script = ExtResource("2_txib2")
 sprite_frames = ExtResource("3_o78nd")
-frame = 4
+frame = 1
 show_preview = true
 animation = "default"
 

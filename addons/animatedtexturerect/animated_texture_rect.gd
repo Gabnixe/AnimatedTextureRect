@@ -1,24 +1,36 @@
+#Made by Gabnixe
+
+#A GDScript implemention of an equivalent of AnimatedSprite2D for TextureRect
+#Check AnimatedSprite2D docs for more info on public signals, properties and functions
+
+#Every scripts that extends this one need to also have a @tool tag for the in-editor functions to work properly
 @tool
 extends TextureRect
 
 class_name AnimatedTextureRect
 
+#Signals shared with AnimatedSprite2D
 signal animation_changed()
 signal animation_finished()
 signal animation_looped()
 signal frame_changed()
 signal sprite_frames_changed()
 
+#Properties shared with AnimatedSprite2D
 @export_group("Animation")
 @export var sprite_frames : SpriteFrames : set = _set_sprite_frames
+#Technically @export, check _get_property_list for more details
 var animation: String : set = _set_animation
 @export var frame : int : set = _set_frame
 @export var speed_scale : float = 1.0
-@export var show_preview : bool = false
 
 var frame_progress : float
 
-#Private
+#AnimatedTextureRect specific properties
+@export var show_preview : bool = false
+@export var autoplay : bool = true
+
+#Private properties
 var _playing : bool = false
 var _custom_speed : float = 1.0
 
@@ -26,8 +38,8 @@ func get_playing_speed():
 	return speed_scale * _custom_speed
 
 func is_playing():
-	if Engine.is_editor_hint() and show_preview:
-		return true
+	if Engine.is_editor_hint():
+		return show_preview
 	else:
 		return _playing
 
@@ -35,13 +47,16 @@ func pause():
 	_playing = false
 	pass
 
+#Calling Play() without parameters will start/resume the currently selected animation
 func play(name: StringName = &"", custom_speed: float = 1.0, from_end: bool = false):
-	animation = name
-	_custom_speed = custom_speed
-	if from_end:
-		frame = sprite_frames.get_frame_count(animation) - 1
-	pass
+	print("test")
+	if name != &"":
+		animation = name
+		_custom_speed = custom_speed
+		if from_end:
+			frame = sprite_frames.get_frame_count(animation) - 1
 	_playing = true
+
 
 func play_backwards(name: StringName = &""):
 	play(name, -1.0, true)
@@ -59,46 +74,53 @@ func stop():
 
 func _ready() -> void:
 	if sprite_frames:
+		if autoplay: 
+			if sprite_frames.has_animation(animation):
+				play()
 		_set_sprite_frames(sprite_frames)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float): 
 	if is_playing():
 		if sprite_frames:
-			frame_progress = frame_progress + (delta * abs(get_playing_speed())) 
-			var frame_lenght = 1/sprite_frames.get_animation_speed(animation)
-			var nb_frames_till_last_update = frame_progress / frame_lenght
-			if nb_frames_till_last_update > 1:
-				var new_frame : int
-				if get_playing_speed() > 0:
-					new_frame = frame + int(nb_frames_till_last_update)
-				else:
-					new_frame = frame - int(nb_frames_till_last_update)
-				var new_frame_progress = frame_progress - (nb_frames_till_last_update * frame_lenght)
-				set_frame_and_progress(new_frame, new_frame_progress)
+			if sprite_frames.has_animation(animation):
+				var time_since_last_frame = delta * abs(get_playing_speed())
+				var frame_lenght = 1/sprite_frames.get_animation_speed(animation)
+				var frame_progress_since_last_frame = time_since_last_frame / frame_lenght
+				frame_progress = frame_progress + frame_progress_since_last_frame
+				print(frame_progress)
+				if frame_progress > 1:
+					var new_frame : int
+					if get_playing_speed() > 0:
+						new_frame = frame + int(frame_progress)
+					else:
+						new_frame = frame - int(frame_progress)
+					var new_frame_progress = frame_progress - int(frame_progress)
+					set_frame_and_progress(new_frame, new_frame_progress)
+			else:
+				push_warning("Trying to play animation with an invalid animation set")
 		else:
 			push_warning("Trying to play animation with no SpriteFrames set")
 
 func _set_sprite_frames(value : SpriteFrames):
+	#Disconnect from old sprite_frames
 	if sprite_frames:
-		sprite_frames.changed.disconnect(_update_data)
+		sprite_frames.changed.disconnect(_on_sprite_frames_changed)
 	sprite_frames = value
 	if sprite_frames == null:
 		stop()
-		texture = null;
+		texture = null
 		show_preview = false
 	else:
-		value.changed.connect(_update_data)
-		_update_data()
-	sprite_frames = value
-	#Update properties list to update available animation list
-	notify_property_list_changed()
+		#Set a default animation
+		animation = sprite_frames.get_animation_names()[0]
+		value.changed.connect(_on_sprite_frames_changed)
+	_on_sprite_frames_changed()
 
-func _update_data():
-	if sprite_frames:
-		frame_progress = 0
-		frame = 0
-		notify_property_list_changed()
+func _on_sprite_frames_changed():
+	#Update properties list to update available animation list
+	sprite_frames_changed.emit()
+	notify_property_list_changed()
 
 
 func _set_frame(value : int):
@@ -106,27 +128,37 @@ func _set_frame(value : int):
 		if animation:
 			var frame_count = sprite_frames.get_frame_count(animation)
 			if value >= frame_count:
-				frame = value - frame_count
+				frame = value % frame_count
 			elif value < 0:
-				frame = frame_count + value
+				frame = frame_count + (value % frame_count) - 1
 			else:
 				frame = value
 			texture = sprite_frames.get_frame_texture(animation, frame)
 		else:
-			push_warning("Trying to change active frame with no valid animation set")
+			push_warning("Trying to change frame with no valid animation set")
 			frame = 0
 	else:
-		push_warning("Trying to change active frame with no SpriteFrames set")
+		push_warning("Trying to change frame with no SpriteFrames set")
 		frame = 0
 	frame_progress = 0
+	frame_changed.emit()
+
 
 func _set_animation(value : String):
 	if sprite_frames:
 		if sprite_frames.has_animation(value):
 			animation = value
 			#Reset frame since we changed animation
-			frame_progress = 0
 			frame = 0
+			if autoplay and !Engine.is_editor_hint(): 
+				play()
+		else:
+			push_warning("Trying to change animation to an invalid one")
+			animation = ""
+	else:
+		push_warning("Trying to change animation with no SpriteFrames set")
+		animation = ""
+	animation_changed.emit()
 
 #Add animation propriety according to the animations in the spriteframes ressource
 func _get_property_list():
