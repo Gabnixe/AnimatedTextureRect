@@ -1,4 +1,4 @@
-# Animated Texture Rect
+# <img src="https://github.com/Gabnixe/AnimatedTextureRect/blob/main/addons/animatedtexturerect/icon.svg" width="32" height="32" /> Animated Texture Rect
 
 A GDScript implemention of an equivalent of AnimatedSprite2D for TextureRect, to display SpriteFrames in your UI
 
