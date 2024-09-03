@@ -7,9 +7,9 @@
 [ext_resource type="Script" path="res://demo/frame_progress_value.gd" id="4_fwva8"]
 [ext_resource type="Script" path="res://demo/speed_scale.gd" id="6_3ccb8"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6ucnw"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8rh7f"]
 atlas = ExtResource("1_7m6pu")
-region = Rect2(0, 0, 200, 200)
+region = Rect2(1000, 0, 200, 200)
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -42,10 +42,11 @@ offset_right = 300.0
 offset_bottom = 284.5
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("AtlasTexture_6ucnw")
+texture = SubResource("AtlasTexture_8rh7f")
 stretch_mode = 4
 script = ExtResource("2_jk43o")
 sprite_frames = ExtResource("3_o78nd")
+frame = 5
 animation = "Attack1"
 
 [node name="Stats" type="VBoxContainer" parent="."]
@@ -75,6 +76,7 @@ text = "Frame:"
 
 [node name="FrameValue" type="Label" parent="Stats/HBoxContainer"]
 layout_mode = 2
+text = "5"
 script = ExtResource("4_f6cgw")
 
 [node name="Controls" type="VBoxContainer" parent="."]
