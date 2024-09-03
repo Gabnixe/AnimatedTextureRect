@@ -1,0 +1,160 @@
+[gd_scene load_steps=8 format=3 uid="uid://vf357k17fgrv"]
+
+[ext_resource type="Texture2D" uid="uid://dvufi16qt18no" path="res://demo/animations/Attack1.png" id="1_7m6pu"]
+[ext_resource type="Script" path="res://addons/animatedtexturerect/animated_texture_rect.gd" id="2_jk43o"]
+[ext_resource type="SpriteFrames" uid="uid://bgxq75ppmbsn7" path="res://demo/animations/demo_sprite_frames.tres" id="3_o78nd"]
+[ext_resource type="Script" path="res://demo/frame_value.gd" id="4_f6cgw"]
+[ext_resource type="Script" path="res://demo/frame_progress_value.gd" id="4_fwva8"]
+[ext_resource type="Script" path="res://demo/speed_scale.gd" id="6_3ccb8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ucnw"]
+atlas = ExtResource("1_7m6pu")
+region = Rect2(0, 0, 200, 200)
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.427451, 0.105882, 1)
+
+[node name="AnimatedTextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -284.5
+offset_right = 300.0
+offset_bottom = 284.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_6ucnw")
+stretch_mode = 4
+script = ExtResource("2_jk43o")
+sprite_frames = ExtResource("3_o78nd")
+animation = "Attack1"
+
+[node name="Stats" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 211.0
+offset_bottom = 70.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Stats"]
+layout_mode = 2
+
+[node name="FrameProgress" type="Label" parent="Stats/HBoxContainer2"]
+layout_mode = 2
+text = "Frame Progress:"
+
+[node name="FrameProgressValue" type="Label" parent="Stats/HBoxContainer2"]
+layout_mode = 2
+script = ExtResource("4_fwva8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Stats"]
+layout_mode = 2
+
+[node name="Frame" type="Label" parent="Stats/HBoxContainer"]
+layout_mode = 2
+text = "Frame:"
+
+[node name="FrameValue" type="Label" parent="Stats/HBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_f6cgw")
+
+[node name="Controls" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -195.5
+offset_top = -88.0
+offset_right = 195.5
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Controls/HBoxContainer2"]
+layout_mode = 2
+text = "Speed Scale: "
+
+[node name="HSlider" type="HSlider" parent="Controls/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = -5.0
+max_value = 5.0
+step = 0.01
+value = 1.0
+
+[node name="SpinBox" type="SpinBox" parent="Controls/HBoxContainer2"]
+layout_mode = 2
+min_value = -5.0
+max_value = 5.0
+step = 0.1
+value = 1.0
+script = ExtResource("6_3ccb8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+alignment = 1
+
+[node name="Attack1" type="Button" parent="Controls/HBoxContainer"]
+layout_mode = 2
+text = "Attack 1"
+
+[node name="Attack2" type="Button" parent="Controls/HBoxContainer"]
+layout_mode = 2
+text = "Attack 2"
+
+[node name="Death" type="Button" parent="Controls/HBoxContainer"]
+layout_mode = 2
+text = "Death"
+
+[node name="Idle" type="Button" parent="Controls/HBoxContainer"]
+layout_mode = 2
+text = "Idle"
+
+[node name="Credits" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -327.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 95.0
+grow_horizontal = 0
+text = "Credits to luizmelo for the demo sprites
+
+https://luizmelo.itch.io/martial-hero"
+
+[connection signal="frame_changed" from="AnimatedTextureRect" to="Stats/HBoxContainer/FrameValue" method="_on_frame_changed"]
+[connection signal="value_changed" from="Controls/HBoxContainer2/HSlider" to="Controls/HBoxContainer2/SpinBox" method="set_value"]
+[connection signal="value_changed" from="Controls/HBoxContainer2/SpinBox" to="Controls/HBoxContainer2/HSlider" method="set_value"]
+[connection signal="value_changed" from="Controls/HBoxContainer2/SpinBox" to="Controls/HBoxContainer2/SpinBox" method="_on_value_changed"]
+[connection signal="pressed" from="Controls/HBoxContainer/Attack1" to="AnimatedTextureRect" method="play" binds= [&"Attack1"]]
+[connection signal="pressed" from="Controls/HBoxContainer/Attack2" to="AnimatedTextureRect" method="play" binds= [&"Attack2"]]
+[connection signal="pressed" from="Controls/HBoxContainer/Death" to="AnimatedTextureRect" method="play" binds= [&"Death"]]
+[connection signal="pressed" from="Controls/HBoxContainer/Idle" to="AnimatedTextureRect" method="play" binds= [&"Idle"]]
