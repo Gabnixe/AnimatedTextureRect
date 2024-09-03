@@ -16,6 +16,11 @@ signal animation_looped()
 signal frame_changed()
 signal sprite_frames_changed()
 
+#AnimatedTextureRect specific properties
+@export_group("SpriteFrames Dock Replacement")
+@export var show_preview : bool = false
+@export var autoplay : bool = true
+
 #Properties shared with AnimatedSprite2D
 @export_group("Animation")
 @export var sprite_frames : SpriteFrames : set = _set_sprite_frames
@@ -25,10 +30,6 @@ var animation: String : set = _set_animation
 @export var speed_scale : float = 1.0
 
 var frame_progress : float
-
-#AnimatedTextureRect specific properties
-@export var show_preview : bool = false
-@export var autoplay : bool = true
 
 #Private properties
 var _playing : bool = false

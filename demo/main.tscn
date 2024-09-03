@@ -45,6 +45,7 @@ grow_vertical = 2
 texture = SubResource("AtlasTexture_8rh7f")
 stretch_mode = 4
 script = ExtResource("2_jk43o")
+autoplay = false
 sprite_frames = ExtResource("3_o78nd")
 frame = 5
 animation = "Attack1"
